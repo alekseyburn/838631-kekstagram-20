@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Алексей Коршаков](https://up.htmlacademy.ru/javascript/20/user/838631).
-* Наставник: `Неизвестно`.
+* Наставник: [Раиль Сахавиев](https://htmlacademy.ru/profile/id1331891).
 
 ---
 
