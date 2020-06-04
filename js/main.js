@@ -1,5 +1,8 @@
 'use strict';
 
+var similarPictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
+var picturesContainer = document.querySelector('.pictures');
+
 var PHOTO_QUANTITY = 25;
 var MIN_LIKE = 15;
 var MAX_LIKE = 200;
@@ -93,10 +96,35 @@ function createPhotos() {
   }
 
   var shuffledArray = shuffleArray(numbersArray);
-
-  for (i = 0; i < shuffledArray.length - 1; i++) {
+  for (i = 0; i < shuffledArray.length; i++) {
     photos.push(createPhotoDescription(shuffledArray[i]));
   }
 
   return photos;
 }
+
+// Создание DOM-элемента по шаблону
+function createPicture(picture) {
+  var pictureElement = similarPictureTemplate.cloneNode(true);
+
+  pictureElement.querySelector('.picture__img').src = picture.url;
+  pictureElement.querySelector('.picture__likes').textContent = picture.likes;
+  pictureElement.querySelector('.picture__comments').textContent = picture.comments.length;
+
+  return pictureElement;
+}
+
+// Создание всех картинок и добавление их в fragment
+function renderPictures(pictures) {
+  var fragment = document.createDocumentFragment();
+
+  pictures.forEach(function (picture) {
+    fragment.appendChild(createPicture(picture));
+  });
+
+  return fragment;
+}
+
+// Отрисовка фотографий на странице
+picturesContainer.appendChild(renderPictures(createPhotos()));
+
