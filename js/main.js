@@ -4,11 +4,11 @@ var similarPictureTemplate = document.querySelector('#picture').content.querySel
 var picturesContainer = document.querySelector('.pictures');
 
 var PHOTO_QUANTITY = 25;
-var MIN_LIKE = 15;
-var MAX_LIKE = 200;
+var MIN_LIKES_COUNT = 15;
+var MAX_LIKES_COUNT = 200;
 var MIN_AVATAR_NUMBER = 1;
 var MAX_AVATAR_NUMBER = 6;
-var MAX_COMMENT = 4;
+var MAX_COMMENTS_COUNT = 4;
 var MESSAGES = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -47,7 +47,7 @@ function createPhotoDescription(number) {
   var obj = {
     url: generatePhotoUrl(number),
     description: 'что-то на фото',
-    likes: getRandomNumber(MIN_LIKE, MAX_LIKE),
+    likes: getRandomNumber(MIN_LIKES_COUNT, MAX_LIKES_COUNT),
     comments: generateComments()
   };
 
@@ -69,7 +69,7 @@ function createComment() {
 function generateComments() {
   var arr = [];
 
-  for (var i = 0; i <= getRandomNumber(1, MAX_COMMENT); i++) {
+  for (var i = 0; i <= getRandomNumber(1, MAX_COMMENTS_COUNT); i++) {
     arr.push(createComment());
   }
 
