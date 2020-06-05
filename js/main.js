@@ -120,7 +120,7 @@ function createPictureElement(picture) {
 }
 
 // Создание всех картинок и добавление их в fragment
-function renderPictures(pictures) {
+function createPicturesFragment(pictures) {
   var fragment = document.createDocumentFragment();
 
   pictures.forEach(function (picture) {
@@ -131,5 +131,8 @@ function renderPictures(pictures) {
 }
 
 // Отрисовка фотографий на странице
-picturesContainer.appendChild(renderPictures(createPhotosArray()));
+function renderPictures() {
+  return picturesContainer.appendChild(createPicturesFragment(createPhotosArray()));
+}
 
+renderPictures();
