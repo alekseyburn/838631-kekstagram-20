@@ -9,7 +9,7 @@ var MAX_LIKES_COUNT = 200;
 var MIN_AVATAR_NUMBER = 1;
 var MAX_AVATAR_NUMBER = 6;
 var MAX_COMMENTS_COUNT = 4;
-var MESSAGES = [
+var messages = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
@@ -85,7 +85,7 @@ function generateMessage() {
     if (i === 2) {
       message += ' ';
     }
-    message += MESSAGES[getRandomNumber(0, MESSAGES.length - 1)];
+    message += messages[getRandomNumber(0, messages.length - 1)];
   }
 
   return message;
