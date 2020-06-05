@@ -37,10 +37,15 @@ function shuffleArray(arr) {
   return arr;
 }
 
+// Генерация ссылки на изображение
+function generatePhotoUrl(number) {
+  return 'photos/' + number + '.jpg';
+}
+
 // Создание одного объекта с фото
 function createPhotoDescription(number) {
   var obj = {
-    url: 'photos/' + number + '.jpg',
+    url: generatePhotoUrl(number),
     description: 'что-то на фото',
     likes: getRandomNumber(MIN_LIKE, MAX_LIKE),
     comments: generateComments()
@@ -87,7 +92,7 @@ function generateMessage() {
 }
 
 // Создание массива из 25 объектов с фото
-function createPhotos() {
+function createPhotosArray() {
   var photos = [];
   var numbersArray = [];
 
@@ -104,7 +109,7 @@ function createPhotos() {
 }
 
 // Создание DOM-элемента по шаблону
-function createPicture(picture) {
+function createPictureElement(picture) {
   var pictureElement = similarPictureTemplate.cloneNode(true);
 
   pictureElement.querySelector('.picture__img').src = picture.url;
@@ -119,12 +124,12 @@ function renderPictures(pictures) {
   var fragment = document.createDocumentFragment();
 
   pictures.forEach(function (picture) {
-    fragment.appendChild(createPicture(picture));
+    fragment.appendChild(createPictureElement(picture));
   });
 
   return fragment;
 }
 
 // Отрисовка фотографий на странице
-picturesContainer.appendChild(renderPictures(createPhotos()));
+picturesContainer.appendChild(renderPictures(createPhotosArray()));
 
