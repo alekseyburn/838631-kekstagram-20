@@ -17,7 +17,9 @@ var messages = [
   'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
 ];
-var NAMES = ['Ivan', 'Maria', 'Aleksey', 'Andrey', 'Daria', 'Fred', 'Anna'];
+var names = ['Ivan', 'Maria', 'Aleksey', 'Andrey', 'Daria', 'Fred', 'Anna'];
+var photosArray = createPhotosArray();
+
 
 // Генерация рандомного числа от min до max
 function getRandomNumber(min, max) {
@@ -59,7 +61,7 @@ function createComment() {
   var obj = {
     avatar: 'img/avatar-' + getRandomNumber(MIN_AVATAR_NUMBER, MAX_AVATAR_NUMBER) + '.svg',
     message: generateMessage(),
-    name: NAMES[getRandomNumber(0, NAMES.length - 1)]
+    name: names[getRandomNumber(0, names.length - 1)]
   };
 
   return obj;
@@ -131,8 +133,8 @@ function createPicturesFragment(pictures) {
 }
 
 // Отрисовка фотографий на странице
-function renderPictures() {
-  return picturesContainer.appendChild(createPicturesFragment(createPhotosArray()));
+function renderPictures(photosArr) {
+  return picturesContainer.appendChild(createPicturesFragment(photosArr));
 }
 
-renderPictures();
+renderPictures(photosArray);
