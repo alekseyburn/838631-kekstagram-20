@@ -112,3 +112,48 @@ function renderPictures(picturesArray) {
 var picturesArray = generatePicturesArray();
 
 renderPictures(picturesArray);
+
+var bigPicture = document.querySelector('.big-picture');
+bigPicture.classList.remove('hidden');
+
+// Заполнение блока Big-picture информацией из массива
+function fillBigPictureInfo(template, picture) {
+  var fragment = document.createDocumentFragment();
+  var commentsList = template.querySelector('.social__comments');
+
+  template.querySelector('.big-picture__img img').src = picture.url;
+  template.querySelector('.likes-count').textContent = picture.likes;
+  template.querySelector('.comments-count').textContent = picture.comments.length;
+  template.querySelector('.social__caption').textContent = picture.description;
+
+  picture.comments.forEach(function (comment) {
+    fragment.appendChild(generateCommentElement(comment));
+  });
+
+  commentsList.appendChild(fragment);
+}
+
+// Создание элемента комментария
+function generateCommentElement(commentObject) {
+  var li = document.createElement('li');
+  var img = document.createElement('img');
+  var p = document.createElement('p');
+  li.classList.add('social__comment');
+  img.classList.add('social__picture');
+  img.src = commentObject.avatar;
+  img.alt = commentObject.name;
+  img.width = 35;
+  img.height = 35;
+  p.classList.add('social__text');
+  p.textContent = commentObject.message;
+  li.appendChild(img);
+  li.appendChild(p);
+
+  return li;
+}
+
+fillBigPictureInfo(bigPicture, picturesArray[0]);
+
+bigPicture.querySelector('.social__comment-count').classList.add('hidden');
+bigPicture.querySelector('.comments-loader').classList.add('hidden');
+document.body.classList.add('modal-open');
