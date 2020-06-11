@@ -113,10 +113,9 @@ var pictures = generatePictures();
 
 renderPictures(pictures);
 
-var bigPicture = document.querySelector('.big-picture');
-bigPicture.classList.remove('hidden');
+var pictureModal = document.querySelector('.big-picture');
+pictureModal.classList.remove('hidden');
 
-// Заполнение блока Big-picture информацией из массива
 function fillBigPictureInfo(template, picture) {
   var fragment = document.createDocumentFragment();
   var commentsList = template.querySelector('.social__comments');
@@ -133,27 +132,28 @@ function fillBigPictureInfo(template, picture) {
   commentsList.appendChild(fragment);
 }
 
-// Создание элемента комментария
 function generateCommentElement(comment) {
-  var li = document.createElement('li');
   var img = document.createElement('img');
-  var p = document.createElement('p');
-  li.classList.add('social__comment');
   img.classList.add('social__picture');
   img.src = comment.avatar;
   img.alt = comment.name;
   img.width = 35;
   img.height = 35;
-  p.classList.add('social__text');
+
+  var p = document.createElement('p');
   p.textContent = comment.message;
+  p.classList.add('social__text');
+
+  var li = document.createElement('li');
+  li.classList.add('social__comment');
   li.appendChild(img);
   li.appendChild(p);
 
   return li;
 }
 
-fillBigPictureInfo(bigPicture, pictures[0]);
+fillBigPictureInfo(pictureModal, pictures[0]);
 
-bigPicture.querySelector('.social__comment-count').classList.add('hidden');
-bigPicture.querySelector('.comments-loader').classList.add('hidden');
+pictureModal.querySelector('.social__comment-count').classList.add('hidden');
+pictureModal.querySelector('.comments-loader').classList.add('hidden');
 document.body.classList.add('modal-open');
