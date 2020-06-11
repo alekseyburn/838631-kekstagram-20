@@ -8,6 +8,8 @@ var MAX_LIKES_COUNT = 200;
 var MIN_AVATAR_NUMBER = 1;
 var MAX_AVATAR_NUMBER = 6;
 var MAX_COMMENTS_COUNT = 4;
+var COMMENT_AVATAR_WIDTH = 35;
+var COMMENT_AVATAR_HEIGHT = 35;
 var messages = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -114,7 +116,7 @@ var pictures = generatePictures();
 renderPictures(pictures);
 
 var pictureModal = document.querySelector('.big-picture');
-pictureModal.classList.remove('hidden');
+// pictureModal.classList.remove('hidden');
 
 function fillBigPictureInfo(template, picture) {
   var fragment = document.createDocumentFragment();
@@ -137,8 +139,8 @@ function generateCommentElement(comment) {
   img.classList.add('social__picture');
   img.src = comment.avatar;
   img.alt = comment.name;
-  img.width = 35;
-  img.height = 35;
+  img.width = COMMENT_AVATAR_WIDTH;
+  img.height = COMMENT_AVATAR_HEIGHT;
 
   var p = document.createElement('p');
   p.textContent = comment.message;
