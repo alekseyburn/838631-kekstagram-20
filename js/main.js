@@ -159,3 +159,73 @@ fillBigPictureInfo(pictureModal, pictures[0]);
 pictureModal.querySelector('.social__comment-count').classList.add('hidden');
 pictureModal.querySelector('.comments-loader').classList.add('hidden');
 document.body.classList.add('modal-open');
+
+var uploadFileInput = document.querySelector('#upload-file');
+var fileEditModal = document.querySelector('.img-upload__overlay');
+var fileEditModalClose = fileEditModal.querySelector('#upload-cancel');
+
+function openEditorModal() {
+  fileEditModal.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+  scaleControlInput.value = INITIAL_PICTURE_SCALE + '%';
+
+  document.addEventListener('keydown', onPopupEscPress);
+}
+
+function closeEditorModal() {
+  fileEditModal.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  uploadFileInput.value = '';
+
+  document.removeEventListener('keydown', onPopupEscPress);
+}
+
+function onPopupEscPress(event) {
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    closeEditorModal();
+  }
+}
+
+uploadFileInput.addEventListener('change', function () {
+  openEditorModal();
+});
+
+fileEditModalClose.addEventListener('click', function () {
+  closeEditorModal();
+});
+
+var imgUploadControl = document.querySelector('.img-upload__scale');
+var scaleControlSmaller = imgUploadControl.querySelector('.scale__control--smaller');
+var scaleControlBigger = imgUploadControl.querySelector('.scale__control--bigger');
+var scaleControlInput = imgUploadControl.querySelector('.scale__control--value');
+var imgUploadPreview = document.querySelector('.img-upload__preview img');
+var INITIAL_PICTURE_SCALE = 100;
+var MIN_SCALE_VALUE = 25;
+var MAX_SCALE_VALUE = 100;
+var SCALE_STEP = 25;
+
+function changePictureScale(event) {
+  // Подобного в лекциях не было, но я додумался только так
+  var scaleValue = Number(scaleControlInput.value.slice(0, -1));
+
+  if (event.target === scaleControlSmaller) {
+    scaleValue -= SCALE_STEP;
+  } else if (event.target === scaleControlBigger) {
+    scaleValue += SCALE_STEP;
+  }
+
+  if (scaleValue > MAX_SCALE_VALUE) {
+    scaleValue = MAX_SCALE_VALUE;
+  }
+  if (scaleValue <= MIN_SCALE_VALUE) {
+    scaleValue = MIN_SCALE_VALUE;
+  }
+
+  scaleControlInput.value = scaleValue + '%';
+  imgUploadPreview.style.transform = 'scale(' + (scaleValue / 100) + ')';
+}
+
+imgUploadControl.addEventListener('click', function (event) {
+  changePictureScale(event);
+});
