@@ -182,7 +182,7 @@ function closeEditorModal() {
 }
 
 function onPopupEscPress(event) {
-  if (event.key === 'Escape') {
+  if (event.key === 'Escape' && event.target !== hashtagInput) {
     event.preventDefault();
     closeEditorModal();
   }
@@ -202,6 +202,7 @@ var scaleControlBigger = imgUploadControl.querySelector('.scale__control--bigger
 var scaleControlInput = imgUploadControl.querySelector('.scale__control--value');
 var imgUploadPreview = document.querySelector('.img-upload__preview img');
 var INITIAL_PICTURE_SCALE = 100;
+var INITIAL_FILTER_VALUE = 100;
 var MIN_SCALE_VALUE = 25;
 var MAX_SCALE_VALUE = 100;
 var SCALE_STEP = 25;
@@ -237,6 +238,9 @@ function onFilterChange(event) {
   imgUploadPreview.className = '';
   imgUploadPreview.style.filter = null;
   imgUploadPreview.classList.add('effects__preview--' + event.target.value);
+  effectLevelInput.value = INITIAL_FILTER_VALUE;
+  effectLevelPin.style.left = INITIAL_FILTER_VALUE + '%';
+  effectLevelDepth.style.width = INITIAL_FILTER_VALUE + '%';
 
   if (event.target.value === 'none') {
     effectLevelSlider.classList.add('hidden');
@@ -249,6 +253,7 @@ imgEffectsContainer.addEventListener('change', onFilterChange);
 
 var effectLevelSlider = document.querySelector('.img-upload__effect-level');
 var effectLevelPin = effectLevelSlider.querySelector('.effect-level__pin');
+var effectLevelDepth = effectLevelSlider.querySelector('.effect-level__depth');
 var effectLevelInput = effectLevelSlider.querySelector('.effect-level__value');
 
 function onEffectLevelChange() {
@@ -266,7 +271,9 @@ function onEffectLevelChange() {
       imgUploadPreview.style.filter = 'blur(' + (effectLevelInput.value * 3 / 100) + 'px)';
       break;
     case 'effects__preview--heat':
-      imgUploadPreview.style.filter = 'brightness(' + (effectLevelInput.value * 3 / 100 + 1) + ')';
+      var resultInputValue = effectLevelInput.value * 3 / 100;
+      resultInputValue = (resultInputValue < 1) ? 1 : resultInputValue;
+      imgUploadPreview.style.filter = 'brightness(' + resultInputValue + ')';
       break;
     default:
       imgUploadPreview.style.filter = null;
@@ -274,3 +281,42 @@ function onEffectLevelChange() {
 }
 
 effectLevelPin.addEventListener('mouseup', onEffectLevelChange);
+
+var hashtagInput = document.querySelector('.text__hashtags');
+
+hashtagInput.addEventListener('input', function () {
+  var values = hashtagInput.value.toLowerCase().split(' ');
+  var MAX_HASHTAG_COUNT = 5;
+  var regHashtag = /^#/i;
+  var regSymbols = /^#[а-яa-z0-9]+/i;
+  var regLength = /^.{2,20}$/i;
+  var errorName = '';
+
+  values.forEach(function (hashtag, index, array) {
+    if (!regHashtag.test(hashtag)) {
+      errorName = 'hashtagFirst';
+    } else if (!regLength.test(hashtag)) {
+      errorName = 'hashtagLength';
+    } else if (!regSymbols.test(hashtag)) {
+      errorName = 'hashtagSymbols';
+    } else if (array.indexOf(hashtag) !== array.lastIndexOf(hashtag)) {
+      errorName = 'hashtagDuplicate';
+    } else {
+      errorName = '';
+    }
+  });
+
+  if (errorName === 'hashtagFirst') {
+    hashtagInput.setCustomValidity('Хештег должен начинаться с #');
+  } else if (errorName === 'hashtagLength') {
+    hashtagInput.setCustomValidity('Длина хештега должна быть от 2 до 20 символов, включая #');
+  } else if (errorName === 'hashtagSymbols') {
+    hashtagInput.setCustomValidity('Хештег должен состоять только из букв и цифр');
+  } else if (errorName === 'hashtagDuplicate') {
+    hashtagInput.setCustomValidity('Повторяющиеся хештеги запрещены');
+  } else if (values.length > MAX_HASHTAG_COUNT) {
+    hashtagInput.setCustomValidity('Количество хештегов не должно быть больше 5');
+  } else {
+    hashtagInput.setCustomValidity('');
+  }
+});
