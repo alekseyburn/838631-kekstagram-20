@@ -168,6 +168,7 @@ function openEditorModal() {
   fileEditModal.classList.remove('hidden');
   document.body.classList.add('modal-open');
   scaleControlInput.value = INITIAL_PICTURE_SCALE + '%';
+  effectLevelSlider.classList.add('hidden');
 
   document.addEventListener('keydown', onPopupEscPress);
 }
@@ -229,3 +230,47 @@ function changePictureScale(event) {
 imgUploadControl.addEventListener('click', function (event) {
   changePictureScale(event);
 });
+
+var imgEffectsContainer = document.querySelector('.img-upload__effects');
+
+function onFilterChange(event) {
+  imgUploadPreview.className = '';
+  imgUploadPreview.style.filter = null;
+  imgUploadPreview.classList.add('effects__preview--' + event.target.value);
+
+  if (event.target.value === 'none') {
+    effectLevelSlider.classList.add('hidden');
+  } else {
+    effectLevelSlider.classList.remove('hidden');
+  }
+}
+
+imgEffectsContainer.addEventListener('change', onFilterChange);
+
+var effectLevelSlider = document.querySelector('.img-upload__effect-level');
+var effectLevelPin = effectLevelSlider.querySelector('.effect-level__pin');
+var effectLevelInput = effectLevelSlider.querySelector('.effect-level__value');
+
+function onEffectLevelChange() {
+  switch (imgUploadPreview.className) {
+    case 'effects__preview--chrome':
+      imgUploadPreview.style.filter = 'grayscale(' + (effectLevelInput.value / 100) + ')';
+      break;
+    case 'effects__preview--sepia':
+      imgUploadPreview.style.filter = 'sepia(' + (effectLevelInput.value / 100) + ')';
+      break;
+    case 'effects__preview--marvin':
+      imgUploadPreview.style.filter = 'invert(' + effectLevelInput.value + '%)';
+      break;
+    case 'effects__preview--phobos':
+      imgUploadPreview.style.filter = 'blur(' + (effectLevelInput.value * 3 / 100) + 'px)';
+      break;
+    case 'effects__preview--heat':
+      imgUploadPreview.style.filter = 'brightness(' + (effectLevelInput.value * 3 / 100 + 1) + ')';
+      break;
+    default:
+      imgUploadPreview.style.filter = null;
+  }
+}
+
+effectLevelPin.addEventListener('mouseup', onEffectLevelChange);
