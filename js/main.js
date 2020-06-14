@@ -162,7 +162,7 @@ document.body.classList.add('modal-open');
 
 var uploadFileInput = document.querySelector('#upload-file');
 var fileEditModal = document.querySelector('.img-upload__overlay');
-var fileEditModalClose = fileEditModal.querySelector('#upload-cancel');
+var fileEditModalCloseButton = fileEditModal.querySelector('#upload-cancel');
 
 function openEditorModal() {
   fileEditModal.classList.remove('hidden');
@@ -170,7 +170,8 @@ function openEditorModal() {
   scaleControlInput.value = INITIAL_PICTURE_SCALE + '%';
   effectLevelSlider.classList.add('hidden');
 
-  document.addEventListener('keydown', onPopupEscPress);
+  document.addEventListener('keydown', onEscPress);
+  hashtagInput.addEventListener('focus', onInputFocus);
 }
 
 function closeEditorModal() {
@@ -178,27 +179,43 @@ function closeEditorModal() {
   document.body.classList.remove('modal-open');
   uploadFileInput.value = '';
 
-  document.removeEventListener('keydown', onPopupEscPress);
+  document.removeEventListener('keydown', onEscPress);
+  hashtagInput.removeEventListener('focus', onInputFocus);
 }
 
-function onPopupEscPress(event) {
-  if (event.key === 'Escape' && event.target !== hashtagInput) {
+function onEscPress(event) {
+  if (event.key === 'Escape') {
     event.preventDefault();
     closeEditorModal();
+  }
+}
+
+function onInputFocus(event) {
+  if (event.target === hashtagInput) {
+    event.preventDefault();
+    document.removeEventListener('keydown', onEscPress);
+    hashtagInput.addEventListener('blur', onInputBlur);
+  }
+}
+
+function onInputBlur(event) {
+  if (event.target === hashtagInput) {
+    event.preventDefault();
+    document.addEventListener('keydown', onEscPress);
+    hashtagInput.removeEventListener('blur', onInputBlur);
   }
 }
 
 uploadFileInput.addEventListener('change', function () {
   openEditorModal();
 });
-
-fileEditModalClose.addEventListener('click', function () {
+fileEditModalCloseButton.addEventListener('click', function () {
   closeEditorModal();
 });
 
 var imgUploadControl = document.querySelector('.img-upload__scale');
-var scaleControlSmaller = imgUploadControl.querySelector('.scale__control--smaller');
-var scaleControlBigger = imgUploadControl.querySelector('.scale__control--bigger');
+var scaleControlSmallerButton = imgUploadControl.querySelector('.scale__control--smaller');
+var scaleControlBiggerButton = imgUploadControl.querySelector('.scale__control--bigger');
 var scaleControlInput = imgUploadControl.querySelector('.scale__control--value');
 var imgUploadPreview = document.querySelector('.img-upload__preview img');
 var INITIAL_PICTURE_SCALE = 100;
@@ -211,9 +228,9 @@ function changePictureScale(event) {
   // Подобного в лекциях не было, но я додумался только так
   var scaleValue = Number(scaleControlInput.value.slice(0, -1));
 
-  if (event.target === scaleControlSmaller) {
+  if (event.target === scaleControlSmallerButton) {
     scaleValue -= SCALE_STEP;
-  } else if (event.target === scaleControlBigger) {
+  } else if (event.target === scaleControlBiggerButton) {
     scaleValue += SCALE_STEP;
   }
 
