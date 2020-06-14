@@ -33,7 +33,7 @@ var MIN_SCALE_VALUE = 25;
 var MAX_SCALE_VALUE = 100;
 var SCALE_STEP = 25;
 var MAX_HASHTAG_COUNT = 5;
-var hashtagSymbolsRegexp = /^[а-яa-z0-9]+/i;
+var hashtagSymbolsRegexp = /#?[а-яa-z0-9]+/i;
 
 var pictureModal = document.querySelector('.big-picture');
 var uploadFileInput = document.querySelector('#upload-file');
@@ -333,7 +333,9 @@ hashtagInput.addEventListener('input', function () {
       hashtagErrors.push('количество хештегов не должно быть больше 5');
     }
     errorMessage += hashtagErrors.join(', ');
-    errors.push(errorMessage);
+    if (hashtagErrors.length > 0) {
+      errors.push(errorMessage);
+    }
   });
 
   if (errors.length > 0) {
