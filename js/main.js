@@ -20,6 +20,17 @@ var messages = [
 ];
 var names = ['Ivan', 'Maria', 'Aleksey', 'Andrey', 'Daria', 'Fred', 'Anna'];
 
+var imgUploadControl = document.querySelector('.img-upload__scale');
+var scaleControlSmallerButton = imgUploadControl.querySelector('.scale__control--smaller');
+var scaleControlBiggerButton = imgUploadControl.querySelector('.scale__control--bigger');
+var scaleControlInput = imgUploadControl.querySelector('.scale__control--value');
+var imgUploadPreview = document.querySelector('.img-upload__preview img');
+var INITIAL_PICTURE_SCALE = 100;
+var INITIAL_FILTER_VALUE = 100;
+var MIN_SCALE_VALUE = 25;
+var MAX_SCALE_VALUE = 100;
+var SCALE_STEP = 25;
+
 function getRandomNumber(min, max) {
   return Math.floor(min + Math.random() * (max - min + 1));
 }
@@ -96,7 +107,6 @@ function generatePictureElement(picture) {
   return pictureElement;
 }
 
-
 function generatePicturesFragment(pictures) {
   var fragment = document.createDocumentFragment();
 
@@ -170,8 +180,7 @@ function openEditorModal() {
   scaleControlInput.value = INITIAL_PICTURE_SCALE + '%';
   effectLevelSlider.classList.add('hidden');
 
-  document.addEventListener('keydown', onEscPress);
-  hashtagInput.addEventListener('focus', onInputFocus);
+  document.addEventListener('keydown', onEditorModalEscPress);
 }
 
 function closeEditorModal() {
@@ -179,30 +188,13 @@ function closeEditorModal() {
   document.body.classList.remove('modal-open');
   uploadFileInput.value = '';
 
-  document.removeEventListener('keydown', onEscPress);
-  hashtagInput.removeEventListener('focus', onInputFocus);
+  document.removeEventListener('keydown', onEditorModalEscPress);
 }
 
-function onEscPress(event) {
-  if (event.key === 'Escape') {
+function onEditorModalEscPress(event) {
+  if (event.key === 'Escape' && event.target !== hashtagInput) {
     event.preventDefault();
     closeEditorModal();
-  }
-}
-
-function onInputFocus(event) {
-  if (event.target === hashtagInput) {
-    event.preventDefault();
-    document.removeEventListener('keydown', onEscPress);
-    hashtagInput.addEventListener('blur', onInputBlur);
-  }
-}
-
-function onInputBlur(event) {
-  if (event.target === hashtagInput) {
-    event.preventDefault();
-    document.addEventListener('keydown', onEscPress);
-    hashtagInput.removeEventListener('blur', onInputBlur);
   }
 }
 
@@ -213,40 +205,38 @@ fileEditModalCloseButton.addEventListener('click', function () {
   closeEditorModal();
 });
 
-var imgUploadControl = document.querySelector('.img-upload__scale');
-var scaleControlSmallerButton = imgUploadControl.querySelector('.scale__control--smaller');
-var scaleControlBiggerButton = imgUploadControl.querySelector('.scale__control--bigger');
-var scaleControlInput = imgUploadControl.querySelector('.scale__control--value');
-var imgUploadPreview = document.querySelector('.img-upload__preview img');
-var INITIAL_PICTURE_SCALE = 100;
-var INITIAL_FILTER_VALUE = 100;
-var MIN_SCALE_VALUE = 25;
-var MAX_SCALE_VALUE = 100;
-var SCALE_STEP = 25;
-
-function changePictureScale(event) {
-  // Подобного в лекциях не было, но я додумался только так
+function increasePictureScale() {
   var scaleValue = Number(scaleControlInput.value.slice(0, -1));
-
-  if (event.target === scaleControlSmallerButton) {
-    scaleValue -= SCALE_STEP;
-  } else if (event.target === scaleControlBiggerButton) {
-    scaleValue += SCALE_STEP;
-  }
+  scaleValue += SCALE_STEP;
 
   if (scaleValue > MAX_SCALE_VALUE) {
     scaleValue = MAX_SCALE_VALUE;
   }
+
+  changePictureScale(scaleValue);
+}
+
+function decreasePictureScale() {
+  var scaleValue = Number(scaleControlInput.value.slice(0, -1));
+  scaleValue -= SCALE_STEP;
+
   if (scaleValue <= MIN_SCALE_VALUE) {
     scaleValue = MIN_SCALE_VALUE;
   }
 
-  scaleControlInput.value = scaleValue + '%';
-  imgUploadPreview.style.transform = 'scale(' + (scaleValue / 100) + ')';
+  changePictureScale(scaleValue);
 }
 
-imgUploadControl.addEventListener('click', function (event) {
-  changePictureScale(event);
+function changePictureScale(value) {
+  scaleControlInput.value = value + '%';
+  imgUploadPreview.style.transform = 'scale(' + (value / 100) + ')';
+}
+
+scaleControlSmallerButton.addEventListener('click', function () {
+  decreasePictureScale();
+});
+scaleControlBiggerButton.addEventListener('click', function () {
+  increasePictureScale();
 });
 
 var imgEffectsContainer = document.querySelector('.img-upload__effects');
