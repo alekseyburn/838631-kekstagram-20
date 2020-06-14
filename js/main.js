@@ -2,6 +2,7 @@
 
 var similarPictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 var picturesContainer = document.querySelector('.pictures');
+
 var PHOTO_QUANTITY = 25;
 var MIN_LIKES_COUNT = 15;
 var MAX_LIKES_COUNT = 200;
@@ -30,6 +31,18 @@ var INITIAL_FILTER_VALUE = 100;
 var MIN_SCALE_VALUE = 25;
 var MAX_SCALE_VALUE = 100;
 var SCALE_STEP = 25;
+
+var pictureModal = document.querySelector('.big-picture');
+var uploadFileInput = document.querySelector('#upload-file');
+var fileEditModal = document.querySelector('.img-upload__overlay');
+var fileEditModalCloseButton = fileEditModal.querySelector('#upload-cancel');
+
+var imgEffectsContainer = document.querySelector('.effects__list');
+var effectLevelSlider = document.querySelector('.img-upload__effect-level');
+var effectLevelPin = effectLevelSlider.querySelector('.effect-level__pin');
+var effectLevelDepth = effectLevelSlider.querySelector('.effect-level__depth');
+var effectLevelInput = effectLevelSlider.querySelector('.effect-level__value');
+var hashtagInput = document.querySelector('.text__hashtags');
 
 function getRandomNumber(min, max) {
   return Math.floor(min + Math.random() * (max - min + 1));
@@ -125,7 +138,6 @@ var pictures = generatePictures();
 
 renderPictures(pictures);
 
-var pictureModal = document.querySelector('.big-picture');
 // pictureModal.classList.remove('hidden');
 
 function fillBigPictureInfo(template, picture) {
@@ -169,10 +181,6 @@ fillBigPictureInfo(pictureModal, pictures[0]);
 pictureModal.querySelector('.social__comment-count').classList.add('hidden');
 pictureModal.querySelector('.comments-loader').classList.add('hidden');
 document.body.classList.add('modal-open');
-
-var uploadFileInput = document.querySelector('#upload-file');
-var fileEditModal = document.querySelector('.img-upload__overlay');
-var fileEditModalCloseButton = fileEditModal.querySelector('#upload-cancel');
 
 function openEditorModal() {
   fileEditModal.classList.remove('hidden');
@@ -239,8 +247,6 @@ scaleControlBiggerButton.addEventListener('click', function () {
   increasePictureScale();
 });
 
-var imgEffectsContainer = document.querySelector('.img-upload__effects');
-
 function onFilterChange(event) {
   imgUploadPreview.className = '';
   imgUploadPreview.style.filter = null;
@@ -257,11 +263,6 @@ function onFilterChange(event) {
 }
 
 imgEffectsContainer.addEventListener('change', onFilterChange);
-
-var effectLevelSlider = document.querySelector('.img-upload__effect-level');
-var effectLevelPin = effectLevelSlider.querySelector('.effect-level__pin');
-var effectLevelDepth = effectLevelSlider.querySelector('.effect-level__depth');
-var effectLevelInput = effectLevelSlider.querySelector('.effect-level__value');
 
 function onEffectLevelChange() {
   switch (imgUploadPreview.className) {
@@ -289,7 +290,6 @@ function onEffectLevelChange() {
 
 effectLevelPin.addEventListener('mouseup', onEffectLevelChange);
 
-var hashtagInput = document.querySelector('.text__hashtags');
 
 hashtagInput.addEventListener('input', function () {
   var values = hashtagInput.value.toLowerCase().split(' ');
