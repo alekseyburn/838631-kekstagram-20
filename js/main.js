@@ -44,6 +44,14 @@ var effectLevelDepth = effectLevelSlider.querySelector('.effect-level__depth');
 var effectLevelInput = effectLevelSlider.querySelector('.effect-level__value');
 var hashtagInput = document.querySelector('.text__hashtags');
 
+function addClass(item, className) {
+  item.classList.add(className);
+}
+
+function removeClass(item, className) {
+  item.classList.remove(className);
+}
+
 function getRandomNumber(min, max) {
   return Math.floor(min + Math.random() * (max - min + 1));
 }
@@ -158,7 +166,7 @@ function fillBigPictureInfo(template, picture) {
 
 function generateCommentElement(comment) {
   var img = document.createElement('img');
-  img.classList.add('social__picture');
+  addClass(img, 'social__picture');
   img.src = comment.avatar;
   img.alt = comment.name;
   img.width = COMMENT_AVATAR_WIDTH;
@@ -166,10 +174,10 @@ function generateCommentElement(comment) {
 
   var p = document.createElement('p');
   p.textContent = comment.message;
-  p.classList.add('social__text');
+  addClass(p, 'social__text');
 
   var li = document.createElement('li');
-  li.classList.add('social__comment');
+  addClass(li, 'social__comment');
   li.appendChild(img);
   li.appendChild(p);
 
@@ -180,20 +188,28 @@ fillBigPictureInfo(pictureModal, pictures[0]);
 
 pictureModal.querySelector('.social__comment-count').classList.add('hidden');
 pictureModal.querySelector('.comments-loader').classList.add('hidden');
-document.body.classList.add('modal-open');
+addClass(document.body, 'modal-open');
+
+function showSlider() {
+  removeClass(effectLevelSlider, 'hidden');
+}
+
+function hideSlider() {
+  addClass(effectLevelSlider, 'hidden');
+}
 
 function openEditorModal() {
-  fileEditModal.classList.remove('hidden');
-  document.body.classList.add('modal-open');
+  hideSlider();
   scaleControlInput.value = INITIAL_PICTURE_SCALE + '%';
-  effectLevelSlider.classList.add('hidden');
+  removeClass(fileEditModal, 'hidden');
+  addClass(document.body, 'modal-open');
 
   document.addEventListener('keydown', onEditorModalEscPress);
 }
 
 function closeEditorModal() {
-  fileEditModal.classList.add('hidden');
-  document.body.classList.remove('modal-open');
+  addClass(fileEditModal, 'hidden');
+  removeClass(document.body, 'modal-open');
   uploadFileInput.value = '';
 
   document.removeEventListener('keydown', onEditorModalEscPress);
@@ -250,15 +266,15 @@ scaleControlBiggerButton.addEventListener('click', function () {
 function onFilterChange(event) {
   imgUploadPreview.className = '';
   imgUploadPreview.style.filter = null;
-  imgUploadPreview.classList.add('effects__preview--' + event.target.value);
+  addClass(imgUploadPreview, 'effects__preview--' + event.target.value);
   effectLevelInput.value = INITIAL_FILTER_VALUE;
   effectLevelPin.style.left = INITIAL_FILTER_VALUE + '%';
   effectLevelDepth.style.width = INITIAL_FILTER_VALUE + '%';
 
   if (event.target.value === 'none') {
-    effectLevelSlider.classList.add('hidden');
+    hideSlider();
   } else {
-    effectLevelSlider.classList.remove('hidden');
+    showSlider();
   }
 }
 
