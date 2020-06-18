@@ -50,7 +50,7 @@ var effectLevelPin = effectLevelSlider.querySelector('.effect-level__pin');
 var effectLevelDepth = effectLevelSlider.querySelector('.effect-level__depth');
 var effectLevelInput = effectLevelSlider.querySelector('.effect-level__value');
 var hashtagInput = document.querySelector('.text__hashtags');
-var textareaInput = document.querySelector('.text__description');
+var descriptionTextarea = document.querySelector('.text__description');
 
 function addClass(item, className) {
   item.classList.add(className);
@@ -130,7 +130,7 @@ function generatePictureElement(picture, index) {
   var pictureElement = similarPictureTemplate.cloneNode(true);
 
   pictureElement.querySelector('.picture__img').src = picture.url;
-  pictureElement.querySelector('.picture__img').datasetId = index;
+  pictureElement.querySelector('.picture__img').dataset.pictureId = index;
   pictureElement.querySelector('.picture__likes').textContent = picture.likes;
   pictureElement.querySelector('.picture__comments').textContent = picture.comments.length;
 
@@ -155,7 +155,7 @@ var pictures = generatePictures();
 
 renderPictures(pictures);
 
-function fillBigPictureInfo(template, picture) {
+function fillPictureInfo(template, picture) {
   var fragment = document.createDocumentFragment();
   var commentsList = template.querySelector('.social__comments');
 
@@ -191,49 +191,45 @@ function generateCommentElement(comment) {
   return li;
 }
 
-function openBigPictureModal(event) {
-  /* Здесь мне кажется я намудрил - при клике на картинку event target будет IMG, а при нажатии enter на картинку event target будет ссылка A.
-  Поэтому пришлось написать условие.
-  Возможно, есть какой-то более правильный способ связать маленькие картинки с массивом объектов.
-  Еще думаю - стоит ли принудительно задать фокус на этом открывшемся окне?( на поле ввода текстового комментария, например).
-   */
+function openPictureModal(event, pictureId) {
   if (event.target.className === 'picture' || event.target.className === 'picture__img') {
-    var id = event.target.tagName === 'IMG' ? event.target.datasetId : event.target.children[0].datasetId;
 
-    fillBigPictureInfo(pictureModal, pictures[id]);
+    fillPictureInfo(pictureModal, pictures[pictureId]);
     addClass(pictureModal.querySelector('.social__comment-count'), 'hidden');
     addClass(pictureModal.querySelector('.comments-loader'), 'hidden');
     removeClass(pictureModal, 'hidden');
     addClass(document.body, 'modal-open');
 
-    document.addEventListener('keydown', onBigPictureModalEscPress);
+    document.addEventListener('keydown', onPictureModalEscPress);
   }
 }
 
-function closeBigPictureModal() {
+function closePictureModal() {
   addClass(pictureModal, 'hidden');
   removeClass(document.body, 'modal-open');
 
-  document.removeEventListener('keydown', onBigPictureModalEscPress);
+  document.removeEventListener('keydown', onPictureModalEscPress);
 }
 
-function onBigPictureModalEscPress(event) {
+function onPictureModalEscPress(event) {
   if (event.key === 'Escape') {
     event.preventDefault();
-    closeBigPictureModal();
+    closePictureModal();
   }
 }
 
 picturesContainer.addEventListener('click', function (event) {
-  openBigPictureModal(event);
+  var pictureId = event.target.dataset.pictureId;
+  openPictureModal(event, pictureId);
 });
 picturesContainer.addEventListener('keydown', function (event) {
   if (event.key === 'Enter') {
-    openBigPictureModal(event);
+    var pictureId = event.target.children[0].dataset.pictureId;
+    openPictureModal(event, pictureId);
   }
 });
 pictureModalCloseButton.addEventListener('click', function () {
-  closeBigPictureModal();
+  closePictureModal();
 });
 
 function showSlider() {
@@ -263,7 +259,7 @@ function closeEditorModal() {
 }
 
 function onEditorModalEscPress(event) {
-  if (event.key === 'Escape' && event.target !== hashtagInput && event.target !== textareaInput) {
+  if (event.key === 'Escape' && event.target !== hashtagInput && event.target !== descriptionTextarea) {
     event.preventDefault();
     closeEditorModal();
   }
@@ -389,10 +385,10 @@ hashtagInput.addEventListener('input', function () {
   }
 });
 
-textareaInput.addEventListener('input', function () {
-  if (textareaInput.value.length > MAX_TEXTAREA_LENGTH) {
-    textareaInput.setCustomValidity('длина комментария не может составлять больше 140 символов. Удалите ' + (textareaInput.value.length - MAX_TEXTAREA_LENGTH) + ' символа(ов).');
+descriptionTextarea.addEventListener('input', function () {
+  if (descriptionTextarea.value.length > MAX_TEXTAREA_LENGTH) {
+    descriptionTextarea.setCustomValidity('длина комментария не может составлять больше 140 символов. Удалите ' + (descriptionTextarea.value.length - MAX_TEXTAREA_LENGTH) + ' символа(ов).');
   } else {
-    textareaInput.setCustomValidity('');
+    descriptionTextarea.setCustomValidity('');
   }
 });
