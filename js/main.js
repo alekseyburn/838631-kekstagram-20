@@ -191,17 +191,14 @@ function generateCommentElement(comment) {
   return li;
 }
 
-function openPictureModal(event, pictureId) {
-  if (event.target.className === 'picture' || event.target.className === 'picture__img') {
+function openPictureModal(pictureId) {
+  fillPictureInfo(pictureModal, pictures[pictureId]);
+  addClass(pictureModal.querySelector('.social__comment-count'), 'hidden');
+  addClass(pictureModal.querySelector('.comments-loader'), 'hidden');
+  removeClass(pictureModal, 'hidden');
+  addClass(document.body, 'modal-open');
 
-    fillPictureInfo(pictureModal, pictures[pictureId]);
-    addClass(pictureModal.querySelector('.social__comment-count'), 'hidden');
-    addClass(pictureModal.querySelector('.comments-loader'), 'hidden');
-    removeClass(pictureModal, 'hidden');
-    addClass(document.body, 'modal-open');
-
-    document.addEventListener('keydown', onPictureModalEscPress);
-  }
+  document.addEventListener('keydown', onPictureModalEscPress);
 }
 
 function closePictureModal() {
@@ -219,13 +216,17 @@ function onPictureModalEscPress(event) {
 }
 
 picturesContainer.addEventListener('click', function (event) {
-  var pictureId = event.target.dataset.pictureId;
-  openPictureModal(event, pictureId);
+  if (event.target.className === 'picture' || event.target.className === 'picture__img') {
+    var pictureId = event.target.dataset.pictureId;
+    openPictureModal(pictureId);
+  }
 });
 picturesContainer.addEventListener('keydown', function (event) {
   if (event.key === 'Enter') {
-    var pictureId = event.target.children[0].dataset.pictureId;
-    openPictureModal(event, pictureId);
+    if (event.target.className === 'picture' || event.target.className === 'picture__img') {
+      var pictureId = event.target.children[0].dataset.pictureId;
+      openPictureModal(pictureId);
+    }
   }
 });
 pictureModalCloseButton.addEventListener('click', function () {
@@ -246,6 +247,7 @@ function openEditorModal() {
   effectLevelInput.value = INITIAL_PICTURE_SCALE;
   removeClass(fileEditModal, 'hidden');
   addClass(document.body, 'modal-open');
+  hashtagInput.focus();
 
   document.addEventListener('keydown', onEditorModalEscPress);
 }
