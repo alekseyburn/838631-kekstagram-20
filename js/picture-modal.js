@@ -21,7 +21,9 @@
   }
 
   function onPictureModalEscPress(event) {
-    window.utils.isEscEvent(event, closePictureModal);
+    window.utils.isEscEvent(event, function () {
+      closePictureModal();
+    });
   }
 
   pictureModalCloseButton.addEventListener('click', function () {
