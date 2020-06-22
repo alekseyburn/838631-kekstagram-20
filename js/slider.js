@@ -8,23 +8,26 @@
     effectLevelPin.addEventListener('mousedown', function (event) {
       event.preventDefault();
       var sliderLineWidth = effectLevelLine.clientWidth;
-      var startCoordX = event.clientX;
       var MIN_PERCENT = 0;
       var MAX_PERCENT = 100;
 
-      function onMouseMove(moveEvent) {
-        moveEvent.preventDefault();
-        var shiftCoordX = startCoordX - moveEvent.clientX;
-        startCoordX = moveEvent.clientX;
+      function getCoordX(coordEvent) {
+        var coordX = ((coordEvent.clientX - effectLevelLine.getBoundingClientRect().left) * 100) / sliderLineWidth;
 
-        var pinXpercentage = ((effectLevelPin.offsetLeft - shiftCoordX) * 100) / sliderLineWidth;
-        if (pinXpercentage > MAX_PERCENT) {
-          pinXpercentage = MAX_PERCENT;
-        } else if (pinXpercentage < MIN_PERCENT) {
-          pinXpercentage = MIN_PERCENT;
+        if (coordX > MAX_PERCENT) {
+          coordX = MAX_PERCENT;
+        } else if (coordX < MIN_PERCENT) {
+          coordX = MIN_PERCENT;
         }
 
-        callback(pinXpercentage);
+        return coordX;
+      }
+
+      callback(getCoordX(event));
+
+      function onMouseMove(moveEvent) {
+        moveEvent.preventDefault();
+        callback(getCoordX(moveEvent));
       }
 
       function onMouseUp(upEvent) {
