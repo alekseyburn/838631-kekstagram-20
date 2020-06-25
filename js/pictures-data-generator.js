@@ -68,7 +68,7 @@
     return photos;
   }
 
-  window.mockGeneration = {
+  window.picturesDataGenerator = {
     generatePictures: generatePictures
   };
 })();
