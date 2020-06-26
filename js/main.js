@@ -1,6 +1,5 @@
 'use strict';
 
 (function () {
-  var pictures = window.picturesDataGenerator.generatePictures();
-  window.picturesRenderer.renderPictures(pictures);
+  window.backend.load(window.picturesRenderer.renderPictures, function () {});
 })();
