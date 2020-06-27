@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var form = document.querySelector('.img-upload__form');
   var imgUploadPreview = document.querySelector('.img-upload__preview img');
   var imgEffectsContainer = document.querySelector('.effects__list');
   var effectLevelSlider = document.querySelector('.img-upload__effect-level');
@@ -17,6 +18,9 @@
   var uploadFileInput = document.querySelector('#upload-file');
   var fileEditModal = document.querySelector('.img-upload__overlay');
   var fileEditModalCloseButton = fileEditModal.querySelector('#upload-cancel');
+  var successMessageTemplate = document.querySelector('#success').content.querySelector('.success');
+  var errorMessageTemplate = document.querySelector('#error').content.querySelector('.error');
+  var mainContainer = document.querySelector('main');
   var ORIGINAL_IMAGE_EFFECT = 'none';
   var INITIAL_FILTER_VALUE = 100;
   var INITIAL_PICTURE_SCALE = 100;
@@ -41,6 +45,9 @@
     hideSlider();
     scaleControlInput.value = INITIAL_PICTURE_SCALE + '%';
     effectLevelInput.value = INITIAL_PICTURE_SCALE;
+    imgUploadPreview.style.transform = '';
+    imgUploadPreview.className = '';
+    imgUploadPreview.style.filter = null;
     window.utils.removeClass(fileEditModal, 'hidden');
     window.utils.addClass(document.body, 'modal-open');
     hashtagInput.focus();
@@ -186,7 +193,7 @@
     var errors = [];
 
     values.forEach(function (hashtag, index, array) {
-      var errorMessage = 'Хештег ' + hashtag + ' не соответствует данным критериям: ';
+      var message = 'Хештег ' + hashtag + ' не соответствует данным критериям: ';
       var hashtagErrors = [];
 
       if (hashtag[0] !== '#') {
@@ -204,9 +211,9 @@
       if (array.length > MAX_HASHTAG_COUNT) {
         hashtagErrors.push('количество хештегов не должно быть больше 5');
       }
-      errorMessage += hashtagErrors.join(', ');
+      message += hashtagErrors.join(', ');
       if (hashtagErrors.length > 0) {
-        errors.push(errorMessage);
+        errors.push(message);
       }
     });
     if (errors.length > 0) {
@@ -223,4 +230,97 @@
       descriptionTextarea.setCustomValidity('');
     }
   });
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    window.ajax.upload('https://javascript.pages.academy/kekstagram', new FormData(form), onUploadSuccess, onUploadError);
+  });
+
+  function onUploadSuccess() {
+    form.reset();
+    closeEditorModal();
+    showSuccessMessage();
+  }
+
+  function renderSuccessMessage() {
+    var message = successMessageTemplate.cloneNode(true);
+    window.utils.addClass(message, 'hidden');
+
+    mainContainer.appendChild(message);
+  }
+
+  function showSuccessMessage() {
+    window.utils.removeClass(successMessage, 'hidden');
+    window.utils.addClass(document.body, 'modal-open');
+    successButton.focus();
+
+    successButton.addEventListener('click', function () {
+      hideSuccessMessage();
+    });
+    document.addEventListener('keydown', onSuccessMessageEscPress);
+    document.addEventListener('click', hideSuccessMessage);
+  }
+
+  function hideSuccessMessage() {
+    window.utils.addClass(successMessage, 'hidden');
+    window.utils.removeClass(document.body, 'modal-open');
+
+    document.removeEventListener('keydown', onSuccessMessageEscPress);
+    document.removeEventListener('click', hideSuccessMessage);
+  }
+
+  function onSuccessMessageEscPress(event) {
+    window.utils.isEscEvent(event, function () {
+      hideSuccessMessage();
+    });
+  }
+
+  function onUploadError(error) {
+    form.reset();
+    closeEditorModal();
+    showErrorMessage(error);
+  }
+
+  function renderErrorMessage() {
+    var message = errorMessageTemplate.cloneNode(true);
+    window.utils.addClass(message, 'hidden');
+
+    mainContainer.appendChild(message);
+  }
+
+  function showErrorMessage(error) {
+    errorMessage.querySelector('.error__title').textContent = error;
+    window.utils.removeClass(errorMessage, 'hidden');
+    window.utils.addClass(document.body, 'modal-open');
+    errorButton.focus();
+
+    errorButton.addEventListener('click', function () {
+      hideErrorMessage();
+    });
+    document.addEventListener('keydown', onErrorMessageEscPress);
+    document.addEventListener('click', hideErrorMessage);
+  }
+
+  function hideErrorMessage() {
+    window.utils.addClass(errorMessage, 'hidden');
+    window.utils.removeClass(document.body, 'modal-open');
+
+    document.removeEventListener('keydown', onErrorMessageEscPress);
+    document.removeEventListener('click', hideErrorMessage);
+  }
+
+  function onErrorMessageEscPress(event) {
+    window.utils.isEscEvent(event, function () {
+      hideErrorMessage();
+    });
+  }
+
+  renderSuccessMessage();
+  renderErrorMessage();
+
+  // Эти объявления пришлось спустить после вызова рендеров успеха и ошибки, потому что до вызова этих функций эти объявления в коде не существуют и вызывают ошибку. Это не слишком красиво, поэтому у меня они находились прямиком в функциях.
+  var successMessage = document.querySelector('.success');
+  var successButton = successMessage.querySelector('.success__button');
+  var errorMessage = document.querySelector('.error');
+  var errorButton = errorMessage.querySelector('.error__button');
 })();

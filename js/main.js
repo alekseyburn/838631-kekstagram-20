@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
-  var pictures = window.picturesDataGenerator.generatePictures();
-  window.picturesRenderer.renderPictures(pictures);
+  window.ajax.load('https://javascript.pages.academy/kekstagram/data', picturesCallback, function () {});
+
+  function picturesCallback(data) {
+    window.picturesRenderer.renderPictures(data);
+  }
 })();
