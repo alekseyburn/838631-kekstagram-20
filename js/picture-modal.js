@@ -35,6 +35,11 @@
   function fillPictureInfo(template, picture) {
     var fragment = document.createDocumentFragment();
     var commentsList = template.querySelector('.social__comments');
+    var comments = commentsList.querySelectorAll('.social__comment');
+
+    comments.forEach(function (item) {
+      item.remove();
+    });
 
     template.querySelector('.big-picture__img img').src = picture.url;
     template.querySelector('.likes-count').textContent = picture.likes;
