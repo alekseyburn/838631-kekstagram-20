@@ -193,7 +193,7 @@
     var errors = [];
 
     values.forEach(function (hashtag, index, array) {
-      var errorMessage = 'Хештег ' + hashtag + ' не соответствует данным критериям: ';
+      var message = 'Хештег ' + hashtag + ' не соответствует данным критериям: ';
       var hashtagErrors = [];
 
       if (hashtag[0] !== '#') {
@@ -211,9 +211,9 @@
       if (array.length > MAX_HASHTAG_COUNT) {
         hashtagErrors.push('количество хештегов не должно быть больше 5');
       }
-      errorMessage += hashtagErrors.join(', ');
+      message += hashtagErrors.join(', ');
       if (hashtagErrors.length > 0) {
-        errors.push(errorMessage);
+        errors.push(message);
       }
     });
     if (errors.length > 0) {
@@ -232,81 +232,95 @@
   });
 
   form.addEventListener('submit', function (event) {
-    window.backend.upload(new FormData(form), onUploadSuccess, onUploadError);
     event.preventDefault();
+    window.ajax.upload('https://javascript.pages.academy/kekstagram', new FormData(form), onUploadSuccess, onUploadError);
   });
 
   function onUploadSuccess() {
     form.reset();
     closeEditorModal();
-    renderSuccessPopup();
+    showSuccessMessage();
   }
 
-  function renderSuccessPopup() {
-    var messagePopup = successMessageTemplate.cloneNode(true);
+  function renderSuccessMessage() {
+    var message = successMessageTemplate.cloneNode(true);
+    window.utils.addClass(message, 'hidden');
 
-    mainContainer.appendChild(messagePopup);
+    mainContainer.appendChild(message);
+  }
+
+  function showSuccessMessage() {
+    window.utils.removeClass(successMessage, 'hidden');
     window.utils.addClass(document.body, 'modal-open');
-
-    var successButton = document.querySelector('.success__button');
     successButton.focus();
+
     successButton.addEventListener('click', function () {
-      removeSuccessPopup();
+      hideSuccessMessage();
     });
-    document.addEventListener('keydown', onSuccessPopupEscPress);
-    document.addEventListener('click', removeSuccessPopup);
+    document.addEventListener('keydown', onSuccessMessageEscPress);
+    document.addEventListener('click', hideSuccessMessage);
   }
 
-  function removeSuccessPopup() {
-    var successPopup = document.querySelector('.success');
-
-    successPopup.remove();
+  function hideSuccessMessage() {
+    window.utils.addClass(successMessage, 'hidden');
     window.utils.removeClass(document.body, 'modal-open');
-    document.removeEventListener('keydown', onSuccessPopupEscPress);
-    document.removeEventListener('click', removeSuccessPopup);
+
+    document.removeEventListener('keydown', onSuccessMessageEscPress);
+    document.removeEventListener('click', hideSuccessMessage);
   }
 
-  function onSuccessPopupEscPress(event) {
+  function onSuccessMessageEscPress(event) {
     window.utils.isEscEvent(event, function () {
-      removeSuccessPopup();
+      hideSuccessMessage();
     });
   }
 
-  function onUploadError(errorMessage) {
+  function onUploadError(error) {
     form.reset();
     closeEditorModal();
-    renderErrorPopup(errorMessage);
+    showErrorMessage(error);
   }
 
-  function renderErrorPopup(errorMessage) {
-    var errorPopup = errorMessageTemplate.cloneNode(true);
+  function renderErrorMessage() {
+    var message = errorMessageTemplate.cloneNode(true);
+    window.utils.addClass(message, 'hidden');
 
-    errorPopup.querySelector('.error__title').textContent = errorMessage;
+    mainContainer.appendChild(message);
+  }
 
-    mainContainer.appendChild(errorPopup);
+  function showErrorMessage(error) {
+    errorMessage.querySelector('.error__title').textContent = error;
+    window.utils.removeClass(errorMessage, 'hidden');
     window.utils.addClass(document.body, 'modal-open');
-
-    var errorButton = document.querySelector('.error__button');
     errorButton.focus();
+
     errorButton.addEventListener('click', function () {
-      removeErrorPopup();
+      hideErrorMessage();
     });
-    document.addEventListener('keydown', onErrorPopupEscPress);
-    document.addEventListener('click', removeErrorPopup);
+    document.addEventListener('keydown', onErrorMessageEscPress);
+    document.addEventListener('click', hideErrorMessage);
   }
 
-  function removeErrorPopup() {
-    var errorPopup = document.querySelector('.error');
-
-    errorPopup.remove();
+  function hideErrorMessage() {
+    window.utils.addClass(errorMessage, 'hidden');
     window.utils.removeClass(document.body, 'modal-open');
-    document.removeEventListener('keydown', onErrorPopupEscPress);
-    document.removeEventListener('click', removeErrorPopup);
+
+    document.removeEventListener('keydown', onErrorMessageEscPress);
+    document.removeEventListener('click', hideErrorMessage);
   }
 
-  function onErrorPopupEscPress(event) {
+  function onErrorMessageEscPress(event) {
     window.utils.isEscEvent(event, function () {
-      removeErrorPopup();
+      hideErrorMessage();
     });
   }
+
+  renderSuccessMessage();
+  renderErrorMessage();
+
+  // Эти объявления пришлось спустить после вызова рендеров успеха и ошибки, потому что до вызова этих функций эти объявления в коде не существуют и вызывают ошибку. Это не слишком красиво, поэтому у меня они находились прямиком в функциях.
+  var successMessage = document.querySelector('.success');
+  var successButton = successMessage.querySelector('.success__button');
+  var errorMessage = document.querySelector('.error');
+  var errorButton = errorMessage.querySelector('.error__button');
 })();

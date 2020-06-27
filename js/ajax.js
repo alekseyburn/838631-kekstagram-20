@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var TIMEOUT_IN_MS = 10000;
+  var TIMEOUT = 10000; // in ms
   var StatusCode = {
     OK: 200,
     BAD_REQUEST: 400,
@@ -46,27 +46,25 @@
       onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
-    xhr.timeout = TIMEOUT_IN_MS;
+    xhr.timeout = TIMEOUT;
 
     return xhr;
   }
 
-  function upload(data, onSuccess, onError) {
-    var URL = 'https://javascript.pages.academy/kekstagram';
+  function upload(url, data, onSuccess, onError) {
     var xhr = createXHR(onSuccess, onError);
 
-    xhr.open('POST', URL);
+    xhr.open('POST', url);
     xhr.send(data);
   }
 
-  function load(onSuccess, onError) {
-    var URL = 'https://javascript.pages.academy/kekstagram/data';
+  function load(url, onSuccess, onError) {
     var xhr = createXHR(onSuccess, onError);
-    xhr.open('GET', URL);
+    xhr.open('GET', url);
     xhr.send();
   }
 
-  window.backend = {
+  window.ajax = {
     upload: upload,
     load: load
   };
