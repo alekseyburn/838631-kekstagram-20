@@ -7,6 +7,7 @@
   var imgFilterForm = document.querySelector('.img-filters__form');
   var imgFilterButtons = imgFilterForm.querySelectorAll('.img-filters__button');
   var MAX_IMAGES_COUNT = 10;
+  var serverPictures = [];
 
   function generatePictureElement(picture, index) {
     var pictureElement = similarPictureTemplate.cloneNode(true);
@@ -31,6 +32,7 @@
 
   function renderPictures(pictures) {
     picturesContainer.appendChild(generatePicturesFragment(pictures));
+    serverPictures = pictures;
 
     picturesContainer.addEventListener('click', onPicturesContainerClick);
     picturesContainer.addEventListener('keydown', onPicturesContainerKeydown);
@@ -39,7 +41,7 @@
   function onPicturesContainerClick(event) {
     if (event.target.className === 'picture__img') {
       var pictureId = event.target.dataset.pictureId;
-      window.pictureModal.fillPictureInfo(pictureModal, pictures[pictureId]);
+      window.pictureModal.fillPictureInfo(pictureModal, serverPictures[pictureId]);
       window.pictureModal.openPictureModal();
     }
   }
@@ -48,7 +50,7 @@
     window.utils.isEnterEvent(event, function () {
       if (event.target.className === 'picture') {
         var pictureId = event.target.children[0].dataset.pictureId;
-        window.pictureModal.fillPictureInfo(pictureModal, pictures[pictureId]);
+        window.pictureModal.fillPictureInfo(pictureModal, serverPictures[pictureId]);
         window.pictureModal.openPictureModal();
       }
     });
