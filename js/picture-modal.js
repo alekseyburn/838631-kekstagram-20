@@ -3,23 +3,16 @@
 (function () {
   var pictureModal = document.querySelector('.big-picture');
   var pictureModalCloseButton = pictureModal.querySelector('.big-picture__cancel');
-  var commentsLoadButton = pictureModal.querySelector('.comments-loader');
-  var commentsContainer = pictureModal.querySelector('.social__comments');
-  var loadedCommentsCount = pictureModal.querySelector('.loaded-comments-count');
-  var commentsCount = pictureModal.querySelector('.comments-count');
   var COMMENT_AVATAR_WIDTH = 35;
   var COMMENT_AVATAR_HEIGHT = 35;
-  var FIRST_COMMENTS_COUNT = 5;
-  var COMMENTS_TO_LOAD_COUNT = 5;
-  var count = 0;
 
   function openPictureModal() {
-    showFirstComments();
+    window.utils.addClass(pictureModal.querySelector('.social__comment-count'), 'hidden');
+    window.utils.addClass(pictureModal.querySelector('.comments-loader'), 'hidden');
     window.utils.removeClass(pictureModal, 'hidden');
     window.utils.addClass(document.body, 'modal-open');
 
     document.addEventListener('keydown', onPictureModalEscPress);
-    commentsLoadButton.addEventListener('click', onCommentsLoadButtonClick);
   }
 
   function closePictureModal() {
@@ -27,7 +20,6 @@
     window.utils.removeClass(document.body, 'modal-open');
 
     document.removeEventListener('keydown', onPictureModalEscPress);
-    commentsLoadButton.removeEventListener('click', onCommentsLoadButtonClick);
   }
 
   function onPictureModalEscPress(event) {
@@ -79,35 +71,6 @@
     li.appendChild(p);
 
     return li;
-  }
-
-  function showFirstComments() {
-    count = FIRST_COMMENTS_COUNT;
-
-    window.utils.removeClass(commentsLoadButton, 'hidden');
-    Array.from(commentsContainer.children).slice(count).forEach(function (item) {
-      window.utils.addClass(item, 'hidden');
-    });
-    if (commentsCount.textContent <= FIRST_COMMENTS_COUNT) {
-      loadedCommentsCount.textContent = commentsCount.textContent;
-      window.utils.addClass(commentsLoadButton, 'hidden');
-    } else {
-      loadedCommentsCount.textContent = count;
-    }
-  }
-
-  function onCommentsLoadButtonClick() {
-    count += COMMENTS_TO_LOAD_COUNT;
-
-    Array.from(commentsContainer.children).slice(count - COMMENTS_TO_LOAD_COUNT, count).forEach(function (item) {
-      window.utils.removeClass(item, 'hidden');
-    });
-    if (count > commentsCount.textContent) {
-      loadedCommentsCount.textContent = commentsCount.textContent;
-      window.utils.addClass(commentsLoadButton, 'hidden');
-    } else {
-      loadedCommentsCount.textContent = count;
-    }
   }
 
   window.pictureModal = {
