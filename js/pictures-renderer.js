@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var mainModule = window.main;
-
   var similarPictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
   var picturesContainer = document.querySelector('.pictures');
   var pictureModal = document.querySelector('.big-picture');
@@ -22,7 +20,7 @@
   }
 
   function renderPictures() {
-    var pictures = mainModule.getPictures();
+    var pictures = window.main.getPictures();
 
     var fragment = document.createDocumentFragment();
     pictures.forEach(function (picture, index) {
@@ -34,7 +32,7 @@
   }
 
   function onPicturesContainerClick(event) {
-    var pictures = mainModule.getPictures();
+    var pictures = window.main.getPictures();
 
     if (event.target.className === 'picture__img') {
       var pictureId = event.target.dataset.pictureId;
@@ -44,7 +42,7 @@
   }
 
   function onPicturesContainerKeydown(event) {
-    var pictures = mainModule.getPictures();
+    var pictures = window.main.getPictures();
 
     window.utils.isEnterEvent(event, function () {
       if (event.target.className === 'picture') {
