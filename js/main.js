@@ -13,6 +13,10 @@
     window.utils.removeClass(imgFilter, 'img-filters--inactive');
   }
 
+  imgFilterForm.addEventListener('click', window.debounce(function (event) {
+    window.picturesRenderer.updatePictures(event.target.id);
+  }));
+
   function setPictures(data) {
     pictures = data;
   }
@@ -20,10 +24,6 @@
   function getPictures() {
     return pictures;
   }
-
-  imgFilterForm.addEventListener('click', window.debounce(function (event) {
-    window.picturesRenderer.updatePictures(event, pictures);
-  }));
 
   window.main = {
     setPictures: setPictures,

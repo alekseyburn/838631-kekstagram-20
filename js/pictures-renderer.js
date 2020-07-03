@@ -71,27 +71,23 @@
     renderPictures(getFilteredPictures(event, pictures));
   }
 
-  function getFilteredPictures(event, pictures) {
-    var filteredPictures = [];
+  function getFilteredPictures(filterName) {
+    var pictures = window.main.getPictures();
 
-    switch (event.target.id) {
-      case 'filter-default':
-        filteredPictures = pictures.slice();
-        break;
+    switch (filterName) {
       case 'filter-random':
-        filteredPictures = window.utils.shuffleArray(pictures.slice()).slice(0, MAX_IMAGES_COUNT);
-        break;
+        return window.utils.shuffleArray(pictures.slice()).slice(0, MAX_IMAGES_COUNT);
       case 'filter-discussed':
-        filteredPictures = pictures.slice().sort(function (a, b) {
+        return pictures.slice().sort(function (a, b) {
           var sortingWeight = b.comments.length - a.comments.length;
           if (sortingWeight === 0) {
             sortingWeight = pictures.indexOf(a) - pictures.indexOf(b);
           }
           return sortingWeight;
-          // вернуть это значение внутри if не могу, так как функция вернет значение только если выполнено условие,а это условие может не выполняться.
         });
+      default:
+        return pictures.slice();
     }
-    return filteredPictures;
   }
 
   window.picturesRenderer = {
