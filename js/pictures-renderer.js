@@ -1,13 +1,14 @@
 'use strict';
 
 (function () {
+  var mainModule = window.main;
+
   var similarPictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
   var picturesContainer = document.querySelector('.pictures');
   var pictureModal = document.querySelector('.big-picture');
   var imgFilterForm = document.querySelector('.img-filters__form');
   var imgFilterButtons = imgFilterForm.querySelectorAll('.img-filters__button');
   var MAX_IMAGES_COUNT = 10;
-  var serverPictures = [];
 
   function generatePictureElement(picture, index) {
     var pictureElement = similarPictureTemplate.cloneNode(true);
@@ -20,37 +21,35 @@
     return pictureElement;
   }
 
-  function generatePicturesFragment(pictures) {
-    var fragment = document.createDocumentFragment();
+  function renderPictures() {
+    var pictures = mainModule.getPictures();
 
+    var fragment = document.createDocumentFragment();
     pictures.forEach(function (picture, index) {
       fragment.appendChild(generatePictureElement(picture, index));
     });
-
-    return fragment;
-  }
-
-  function renderPictures(pictures) {
-    picturesContainer.appendChild(generatePicturesFragment(pictures));
-    serverPictures = pictures;
-
+    picturesContainer.appendChild(fragment);
     picturesContainer.addEventListener('click', onPicturesContainerClick);
     picturesContainer.addEventListener('keydown', onPicturesContainerKeydown);
   }
 
   function onPicturesContainerClick(event) {
+    var pictures = mainModule.getPictures();
+
     if (event.target.className === 'picture__img') {
       var pictureId = event.target.dataset.pictureId;
-      window.pictureModal.fillPictureInfo(pictureModal, serverPictures[pictureId]);
+      window.pictureModal.fillPictureInfo(pictureModal, pictures[pictureId]);
       window.pictureModal.openPictureModal();
     }
   }
 
   function onPicturesContainerKeydown(event) {
+    var pictures = mainModule.getPictures();
+
     window.utils.isEnterEvent(event, function () {
       if (event.target.className === 'picture') {
         var pictureId = event.target.children[0].dataset.pictureId;
-        window.pictureModal.fillPictureInfo(pictureModal, serverPictures[pictureId]);
+        window.pictureModal.fillPictureInfo(pictureModal, pictures[pictureId]);
         window.pictureModal.openPictureModal();
       }
     });
