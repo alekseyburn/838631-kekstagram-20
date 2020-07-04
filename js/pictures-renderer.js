@@ -7,7 +7,6 @@
   var imgFilterForm = document.querySelector('.img-filters__form');
   var imgFilterButtons = imgFilterForm.querySelectorAll('.img-filters__button');
   var MAX_IMAGES_COUNT = 10;
-  var serverPictures = [];
 
   function generatePictureElement(picture, index) {
     var pictureElement = similarPictureTemplate.cloneNode(true);
@@ -20,37 +19,35 @@
     return pictureElement;
   }
 
-  function generatePicturesFragment(pictures) {
-    var fragment = document.createDocumentFragment();
+  function renderPictures() {
+    var pictures = window.main.getPictures();
 
+    var fragment = document.createDocumentFragment();
     pictures.forEach(function (picture, index) {
       fragment.appendChild(generatePictureElement(picture, index));
     });
-
-    return fragment;
-  }
-
-  function renderPictures(pictures) {
-    picturesContainer.appendChild(generatePicturesFragment(pictures));
-    serverPictures = pictures;
-
+    picturesContainer.appendChild(fragment);
     picturesContainer.addEventListener('click', onPicturesContainerClick);
     picturesContainer.addEventListener('keydown', onPicturesContainerKeydown);
   }
 
   function onPicturesContainerClick(event) {
+    var pictures = window.main.getPictures();
+
     if (event.target.className === 'picture__img') {
       var pictureId = event.target.dataset.pictureId;
-      window.pictureModal.fillPictureInfo(pictureModal, serverPictures[pictureId]);
+      window.pictureModal.fillPictureInfo(pictureModal, pictures[pictureId]);
       window.pictureModal.openPictureModal();
     }
   }
 
   function onPicturesContainerKeydown(event) {
+    var pictures = window.main.getPictures();
+
     window.utils.isEnterEvent(event, function () {
       if (event.target.className === 'picture') {
         var pictureId = event.target.children[0].dataset.pictureId;
-        window.pictureModal.fillPictureInfo(pictureModal, serverPictures[pictureId]);
+        window.pictureModal.fillPictureInfo(pictureModal, pictures[pictureId]);
         window.pictureModal.openPictureModal();
       }
     });
@@ -74,27 +71,23 @@
     renderPictures(getFilteredPictures(event, pictures));
   }
 
-  function getFilteredPictures(event, pictures) {
-    var filteredPictures = [];
+  function getFilteredPictures(filterName) {
+    var pictures = window.main.getPictures();
 
-    switch (event.target.id) {
-      case 'filter-default':
-        filteredPictures = pictures.slice();
-        break;
+    switch (filterName) {
       case 'filter-random':
-        filteredPictures = window.utils.shuffleArray(pictures.slice()).slice(0, MAX_IMAGES_COUNT);
-        break;
+        return window.utils.shuffleArray(pictures.slice()).slice(0, MAX_IMAGES_COUNT);
       case 'filter-discussed':
-        filteredPictures = pictures.slice().sort(function (a, b) {
+        return pictures.slice().sort(function (a, b) {
           var sortingWeight = b.comments.length - a.comments.length;
           if (sortingWeight === 0) {
             sortingWeight = pictures.indexOf(a) - pictures.indexOf(b);
           }
           return sortingWeight;
-          // вернуть это значение внутри if не могу, так как функция вернет значение только если выполнено условие,а это условие может не выполняться.
         });
+      default:
+        return pictures.slice();
     }
-    return filteredPictures;
   }
 
   window.picturesRenderer = {
