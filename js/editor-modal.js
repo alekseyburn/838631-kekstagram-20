@@ -28,6 +28,7 @@
   var MIN_HASHTAG_LENGTH = 2;
   var MAX_HASHTAG_LENGTH = 20;
   var MAX_TEXTAREA_LENGTH = 140;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var hashtagSymbolsRegexp = /#?[а-яa-z0-9]+/i;
 
   function showSlider() {
@@ -38,6 +39,25 @@
     window.utils.addClass(effectLevelSlider, 'hidden');
   }
 
+  function pasteUploadedImage() {
+    var file = uploadFileInput.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (item) {
+      return fileName.endsWith(item);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        imgUploadPreview.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+    }
+  }
+
   function openEditorModal() {
     hideSlider();
     scaleControlInput.value = INITIAL_PICTURE_SCALE + '%';
@@ -45,6 +65,7 @@
     imgUploadPreview.style.transform = '';
     imgUploadPreview.className = '';
     imgUploadPreview.style.filter = null;
+    pasteUploadedImage();
     window.utils.removeClass(fileEditModal, 'hidden');
     window.utils.addClass(document.body, 'modal-open');
     hashtagInput.focus();
