@@ -19,7 +19,9 @@
     window.utils.addClass(document.body, 'modal-open');
 
     document.addEventListener('keydown', onPictureModalEscPress);
+    pictureModalCloseButton.addEventListener('click', onCloseButtonClick);
     commentsLoadButton.addEventListener('click', onCommentsLoadButtonClick);
+
   }
 
   function closePictureModal() {
@@ -27,7 +29,12 @@
     window.utils.removeClass(document.body, 'modal-open');
 
     document.removeEventListener('keydown', onPictureModalEscPress);
+    pictureModalCloseButton.removeEventListener('click', onCloseButtonClick);
     commentsLoadButton.removeEventListener('click', onCommentsLoadButtonClick);
+  }
+
+  function onCloseButtonClick() {
+    closePictureModal();
   }
 
   function onPictureModalEscPress(event) {
@@ -35,10 +42,6 @@
       closePictureModal();
     });
   }
-
-  pictureModalCloseButton.addEventListener('click', function () {
-    closePictureModal();
-  });
 
   function fillPictureInfo(template, picture) {
     var fragment = document.createDocumentFragment();

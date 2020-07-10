@@ -17,19 +17,26 @@
     window.utils.addClass(document.body, 'modal-open');
     successButton.focus();
 
-    successButton.addEventListener('click', function () {
-      hideSuccessMessage();
-    });
+    successButton.addEventListener('click', onSuccessButtonClick);
     document.addEventListener('keydown', onSuccessMessageEscPress);
-    document.addEventListener('click', hideSuccessMessage);
+    document.addEventListener('click', onDocumentSuccessClick);
   }
 
   function hideSuccessMessage() {
     window.utils.addClass(successMessage, 'hidden');
     window.utils.removeClass(document.body, 'modal-open');
 
+    successButton.removeEventListener('click', onSuccessButtonClick);
     document.removeEventListener('keydown', onSuccessMessageEscPress);
-    document.removeEventListener('click', hideSuccessMessage);
+    document.removeEventListener('click', onDocumentSuccessClick);
+  }
+
+  function onDocumentSuccessClick() {
+    hideSuccessMessage();
+  }
+
+  function onSuccessButtonClick() {
+    hideSuccessMessage();
   }
 
   function onSuccessMessageEscPress(event) {
@@ -51,19 +58,26 @@
     window.utils.addClass(document.body, 'modal-open');
     errorButton.focus();
 
-    errorButton.addEventListener('click', function () {
-      hideErrorMessage();
-    });
+    errorButton.addEventListener('click', onErrorButtonClick);
     document.addEventListener('keydown', onErrorMessageEscPress);
-    document.addEventListener('click', hideErrorMessage);
+    document.addEventListener('click', onDocumentErrorClick);
   }
 
   function hideErrorMessage() {
     window.utils.addClass(errorMessage, 'hidden');
     window.utils.removeClass(document.body, 'modal-open');
 
+    errorButton.removeEventListener('click', onErrorButtonClick);
     document.removeEventListener('keydown', onErrorMessageEscPress);
-    document.removeEventListener('click', hideErrorMessage);
+    document.removeEventListener('click', onDocumentErrorClick);
+  }
+
+  function onDocumentErrorClick() {
+    hideErrorMessage();
+  }
+
+  function onErrorButtonClick() {
+    hideErrorMessage();
   }
 
   function onErrorMessageEscPress(event) {

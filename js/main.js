@@ -4,15 +4,20 @@
 
   var imgFilter = document.querySelector('.img-filters');
   var imgFilterForm = document.querySelector('.img-filters__form');
+  var errorButton = document.querySelector('.error__button');
   var pictures = [];
 
-  window.ajax.load('https://javascript.pages.academy/kekstagram/data', picturesCallback, function () {
-  });
+  window.ajax.load('https://javascript.pages.academy/kekstagram/data', onLoadSuccess, onLoadError);
 
-  function picturesCallback(data) {
+  function onLoadSuccess(data) {
     setPictures(data);
     window.picturesRenderer.renderPictures(data);
     window.utils.removeClass(imgFilter, 'img-filters--inactive');
+  }
+
+  function onLoadError(error) {
+    errorButton.textContent = 'Закрыть';
+    window.messages.showErrorMessage(error);
   }
 
   imgFilterForm.addEventListener('click', window.debounce(function (event) {
@@ -26,6 +31,7 @@
   function getPictures() {
     return pictures;
   }
+
   window.main = {
     getPictures: getPictures
   };
