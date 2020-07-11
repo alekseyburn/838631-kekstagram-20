@@ -12,10 +12,6 @@
     item.classList.remove(className);
   }
 
-  function getRandomNumber(min, max) {
-    return Math.floor(min + Math.random() * (max - min + 1));
-  }
-
   function shuffleArray(arr) {
     for (var i = arr.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
@@ -42,7 +38,6 @@
   window.utils = {
     addClass: addClass,
     removeClass: removeClass,
-    getRandomNumber: getRandomNumber,
     shuffleArray: shuffleArray,
     isEscEvent: isEscEvent,
     isEnterEvent: isEnterEvent
