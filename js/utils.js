@@ -13,14 +13,16 @@
   }
 
   function shuffleArray(arr) {
-    for (var i = arr.length - 1; i > 0; i--) {
+    var copiedArray = arr.slice();
+
+    for (var i = copiedArray.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
-      var temp = arr[i];
-      arr[i] = arr[j];
-      arr[j] = temp;
+      var temp = copiedArray[i];
+      copiedArray[i] = copiedArray[j];
+      copiedArray[j] = temp;
     }
 
-    return arr;
+    return copiedArray;
   }
 
   function isEscEvent(event, callback) {

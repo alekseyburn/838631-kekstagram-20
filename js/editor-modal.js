@@ -39,11 +39,11 @@
     var file = uploadFileInput.files[0];
     var fileName = file.name.toLowerCase();
 
-    var matches = FILE_TYPES.some(function (item) {
+    var isMatch = FILE_TYPES.some(function (item) {
       return fileName.endsWith(item);
     });
 
-    if (matches) {
+    if (isMatch) {
       var reader = new FileReader();
 
       reader.addEventListener('load', function () {

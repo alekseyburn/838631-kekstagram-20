@@ -71,19 +71,21 @@
   }
 
   function getFilteredPictures(filterName) {
+    var copiedPictures = window.main.getPictures().slice();
+
     switch (filterName) {
       case 'filter-random':
-        return window.utils.shuffleArray(window.main.getPictures().slice()).slice(0, RANDOM_IMAGES_COUNT);
+        return window.utils.shuffleArray(copiedPictures).slice(0, RANDOM_IMAGES_COUNT);
       case 'filter-discussed':
-        return window.main.getPictures().slice().sort(function (a, b) {
+        return copiedPictures.sort(function (a, b) {
           var sortingWeight = b.comments.length - a.comments.length;
           if (sortingWeight === 0) {
-            sortingWeight = window.main.getPictures().indexOf(a) - window.main.getPictures().indexOf(b);
+            sortingWeight = copiedPictures.indexOf(a) - copiedPictures.indexOf(b);
           }
           return sortingWeight;
         });
       default:
-        return window.main.getPictures().slice();
+        return copiedPictures;
     }
   }
 
