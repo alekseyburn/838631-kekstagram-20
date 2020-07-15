@@ -10,7 +10,7 @@
   window.ajax.load('https://javascript.pages.academy/kekstagram/data', onLoadSuccess, onLoadError);
 
   function onLoadSuccess(data) {
-    setPictures(data);
+    pictures = data;
     window.picturesRenderer.renderPictures(data);
     window.utils.removeClass(imgFilter, 'img-filters--inactive');
   }
@@ -21,18 +21,6 @@
   }
 
   imgFilterForm.addEventListener('click', window.debounce(function (event) {
-    window.picturesRenderer.updatePictures(event.target);
+    window.picturesRenderer.updatePictures(event.target, pictures);
   }));
-
-  function setPictures(data) {
-    pictures = data;
-  }
-
-  function getPictures() {
-    return pictures;
-  }
-
-  window.main = {
-    getPictures: getPictures
-  };
 })();
