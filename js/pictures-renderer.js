@@ -60,32 +60,31 @@
     picturesContainer.removeEventListener('keydown', onPicturesContainerKeydown);
   }
 
-  function updatePictures(target) {
+  function updatePictures(target, pictures) {
     removePictures();
 
     window.utils.removeClass(activeFilter, 'img-filters__button--active');
     activeFilter = target;
     window.utils.addClass(activeFilter, 'img-filters__button--active');
 
-    renderPictures(getFilteredPictures(target.id));
+    renderPictures(getFilteredPictures(target.id, pictures));
   }
 
-  function getFilteredPictures(filterName) {
-    var copiedPictures = window.main.getPictures().slice();
+  function getFilteredPictures(filterName, pictures) {
 
     switch (filterName) {
       case 'filter-random':
-        return window.utils.shuffleArray(copiedPictures).slice(0, RANDOM_IMAGES_COUNT);
+        return window.utils.shuffleArray(pictures).slice(0, RANDOM_IMAGES_COUNT);
       case 'filter-discussed':
-        return copiedPictures.sort(function (a, b) {
+        return pictures.sort(function (a, b) {
           var sortingWeight = b.comments.length - a.comments.length;
           if (sortingWeight === 0) {
-            sortingWeight = copiedPictures.indexOf(a) - copiedPictures.indexOf(b);
+            sortingWeight = pictures.indexOf(a) - pictures.indexOf(b);
           }
           return sortingWeight;
         });
       default:
-        return copiedPictures;
+        return pictures;
     }
   }
 
